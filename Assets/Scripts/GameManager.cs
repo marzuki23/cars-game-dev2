@@ -28,7 +28,6 @@ public class GameManager : MonoBehaviour
     {
         if (isMissionComplete || isMissionFailed) return;
 
-        // gagal jika waktu habis
         if (timerManager != null && timerManager.timeRemaining <= 0f)
         {
             starsEarned = 0;
@@ -36,7 +35,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // dipanggil saat mobil parkir
     public void OnMissionComplete()
     {
         if (isMissionComplete || isMissionFailed) return;
@@ -46,7 +44,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
-    // dipanggil saat tabrakan
     public void AddCrash()
     {
         if (isMissionComplete || isMissionFailed) return;
@@ -75,8 +72,8 @@ public class GameManager : MonoBehaviour
 
         float timeLeft = timerManager.timeRemaining;
 
-        // bintang dari waktu
         int timeStars;
+
         if (timeLeft >= 10f)
             timeStars = 3;
         else if (timeLeft >= 5f)
@@ -86,8 +83,8 @@ public class GameManager : MonoBehaviour
         else
             timeStars = 0;
 
-        // bintang dari tabrakan
         int crashStars;
+
         if (crashCount == 0)
             crashStars = 3;
         else if (crashCount == 1)
@@ -97,7 +94,6 @@ public class GameManager : MonoBehaviour
         else
             crashStars = 0;
 
-        // ambil nilai terendah
         return Mathf.Min(timeStars, crashStars);
     }
 
@@ -105,6 +101,22 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void NextLevel()
+    {
+        Time.timeScale = 1f;
+
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentIndex + 1 < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(currentIndex + 1);
+        }
+        else
+        {
+            Debug.Log("Level terakhir.");
+        }
     }
 
     private void OnGUI()
@@ -155,9 +167,24 @@ public class GameManager : MonoBehaviour
         GUIStyle btnStyle = new GUIStyle(GUI.skin.button);
         btnStyle.fontSize = 28;
 
-        if (GUI.Button(new Rect(x + 300, y + 360, 300, 70), "ULANGI", btnStyle))
+        if (starsEarned == 0)
         {
-            Retry();
+            if (GUI.Button(new Rect(x + 300, y + 360, 300, 70), "ULANGI", btnStyle))
+            {
+                Retry();
+            }
+        }
+        else
+        {
+            if (GUI.Button(new Rect(x + 150, y + 360, 250, 70), "ULANGI", btnStyle))
+            {
+                Retry();
+            }
+
+            if (GUI.Button(new Rect(x + 500, y + 360, 250, 70), "LANJUTKAN", btnStyle))
+            {
+                NextLevel();
+            }
         }
     }
 

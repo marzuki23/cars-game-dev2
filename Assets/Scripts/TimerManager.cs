@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 public class TimerManager : MonoBehaviour
 {
-    public float timeRemaining = 60f;
-    public Text timerText;
+    public float timeRemaining = 120f;
+    public TextMeshProUGUI timerText;
     public bool timerRunning = true;
 
     public GameManager gameManager;
@@ -26,7 +26,15 @@ public class TimerManager : MonoBehaviour
                 }
             }
 
-            timerText.text = "Waktu: " + Mathf.Ceil(timeRemaining).ToString();
+            DisplayTime(timeRemaining);
         }
+    }
+
+    void DisplayTime(float timeToDisplay)
+    {
+        int minutes = Mathf.FloorToInt(timeToDisplay / 60);
+        int seconds = Mathf.FloorToInt(timeToDisplay % 60);
+
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 }
